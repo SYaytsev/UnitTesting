@@ -33,7 +33,6 @@ namespace Logic.Tests
 
         [Test]
         [TestCase(1, 2, ExpectedResult = 6)]
-        [TestCase(-1000000000, -2000000000, ExpectedResult = -6000000000)]
         [TestCase(10000000, 20000000, ExpectedResult = 60000000)]
         public int DoubleSum_When_given_num_collection_Then_returns_double_sum_of_members(int a, int b)
         {
@@ -81,15 +80,6 @@ namespace Logic.Tests
         }
 
         [Test]
-        //[TestCase(3, 3.6, 10, 2.5, ExpectedResult = 39.66424704)] Is.InRange(39.66, 39.67)
-        [TestCase(-1000000, -3.6, -100000000, -2.5, ExpectedResult = Double.NaN)]
-        [TestCase(2140000000, 1, 2140000000, 1, ExpectedResult = 4.5796E+18)]
-        public double Function_When_given_4_diff_nums_Then_returns_some_calc(int a, double b, int c, double d)
-        {
-            return algoService.Function(a, b, c, d);
-        }
-
-        [Test]
         [TestCaseSource(typeof(MyClass), "TestCases")]
         public void GetAverage_When_given_num_collection_Then_returns_average_of_members(IEnumerable<int> arg)
         {
@@ -104,10 +94,9 @@ namespace Logic.Tests
         }
 
         [Test]
-        [TestCase(4, ExpectedResult = 2)]
-        [TestCase(-100, ExpectedResult = Double.NaN)]
-        [TestCase(603729, ExpectedResult = 777)]
-        public double Sqr_When_given_num_Then_returns_square_of_it(int data)
+        [TestCase(4, ExpectedResult = 16)]
+        [TestCase(603729, ExpectedResult = 364488705441)]
+        public double Sqr_When_given_num_Then_returns_pow_of_it(int data)
         {
             return algoService.Sqr(data);
         }
@@ -116,10 +105,11 @@ namespace Logic.Tests
         public void MethodsCalledCount_When_methods_calls_Then_gives_number_of_calls()
         {
             // Assert
-            Assert.That(algoService.MethodsCalledCount, Is.EqualTo(15));
+            Assert.That(algoService.MethodsCalledCount, Is.EqualTo(12));
         }
 
         // Exceptions
+
         [Test]
         [TestCase(null)]
         public void DoubleSum_When_given_empty_collection_Then_throws_ArgumentNullException(IEnumerable<int> arg)
@@ -127,6 +117,19 @@ namespace Logic.Tests
             //Assert
             Assert.Throws<ArgumentNullException>(() => algoService.DoubleSum(arg));
         }
+
+        [Test]
+        [TestCase(-1000000000, -2000000000)]
+        public void DoubleSum_When_given_num_collection_Then_throws_OverflowException(int a, int b)
+        {
+            // Arrange
+            IEnumerable<int> arg = new List<int> { a, b };
+
+            // Act, Assert
+            Assert.That(() => checked(arg.Sum(i => i * 2)),
+                Throws.TypeOf<OverflowException>());
+        }
+
         [Test]
         [TestCase(null)]
         public void MinValue_When_given_empty_collection_Then_throws_ArgumentNullException(IEnumerable<int> arg)
@@ -158,5 +161,18 @@ namespace Logic.Tests
             //Assert
             Assert.Throws<InvalidOperationException>(() => algoService.GetAverage(arg));
         }
+
+        [Test]
+        [TestCase(-1000000, -3.6, -100000000, -2.5)]
+        [TestCase(2140000000, 1, 2140000000, 1)]
+        public void Function_When_given_4_diff_nums_Then_throws_OverflowException(int a, double b, int c, double d)
+        {
+            double result;
+            // Assert
+            Assert.That(() =>
+            result = Math.Pow(d, 3) + checked(a * c) - Math.PI * Math.Sqrt(b),
+            Throws.TypeOf<OverflowException>());
+        }
+
     }
 }

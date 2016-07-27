@@ -54,13 +54,13 @@ namespace Logic.Tests
             // Arrange
             A.CallTo(() => dataService.GetAllData()).Returns(new List<int> { 1, 4, 9, 16, 25 });
             A.CallTo(() => dataService.GetMax()).Returns(25);
-            A.CallTo(() => algoService.Sqr(A<int>._)).Returns(5.0);
+            A.CallTo(() => algoService.Sqr(A<int>._)).Returns(625.0);
 
             // Act
             var result = masterService.GetMaxSquare();
 
             //Assert
-            Assert.That(result, Is.EqualTo(25));
+            Assert.That(result, Is.EqualTo(625));
         }
         // Exceptions
         [Test]
@@ -74,23 +74,23 @@ namespace Logic.Tests
         }
 
         [Test]
-        public void GetAverage_When_invokes_but_data_absent_Then_throws_InvalidOperationException()
+        public void GetAverage_When_invokes_but_data_absent_Then_returns_zero()
         {
             // Arrange
             A.CallTo(() => dataService.GetAllData()).Returns(null);
 
             //Assert
-            Assert.Throws<InvalidOperationException>(() => masterService.GetMaxSquare());
+            Assert.That(masterService.GetAverage(), Is.EqualTo(0));
         }
 
         [Test]
-        public void GetMaxSquare_When_invokes_but_data_absent_Then_throws_InvalidOperationException()
+        public void GetMaxSquare_When_invokes_but_data_absent_Then_returns_zero()
         {
             // Arrange
             A.CallTo(() => dataService.GetAllData()).Returns(null);
 
             //Assert
-            Assert.Throws<InvalidOperationException>(() => masterService.GetMaxSquare());
+            Assert.That(masterService.GetMaxSquare(), Is.EqualTo(0));
         }
 
     }
